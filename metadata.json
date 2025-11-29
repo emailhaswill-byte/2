@@ -1,0 +1,8 @@
+{
+  "name": "LithoLens",
+  "description": "AI-powered rock and mineral identifier. Upload a photo to instantly identify rocks, crystals, and minerals.",
+  "requestFramePermissions": [
+    "camera",
+    "geolocation"
+  ]
+}
