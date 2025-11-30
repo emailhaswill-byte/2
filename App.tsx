@@ -1,10 +1,10 @@
-
 import React, { useState, useEffect } from 'react';
 import { AnalysisState, SavedRock, RockAnalysis } from './types';
 import { identifyRock } from './services/geminiService';
 import { ImageUploader } from './components/ImageUploader';
 import { AnalysisResult } from './components/AnalysisResult';
 import { Achievements } from './components/Achievements';
+import { InstallPWA } from './components/InstallPWA';
 import { Loader2, Pickaxe, BookOpen, ArrowLeft, Trash2, Lightbulb, Filter, Sun, Aperture, Maximize, MapPin } from 'lucide-react';
 
 const ROCK_FACTS = [
@@ -151,6 +151,9 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-stone-100 flex flex-col items-center">
+      {/* Install Prompt for Mobile */}
+      <InstallPWA />
+
       {/* Navbar / Header */}
       <header className="w-full bg-stone-900 text-stone-50 py-4 px-6 shadow-md z-10 sticky top-0">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
