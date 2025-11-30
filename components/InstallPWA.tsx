@@ -49,7 +49,7 @@ export const InstallPWA: React.FC = () => {
         </div>
         <div className="text-left">
             <p className="text-xs text-stone-400 font-medium uppercase tracking-wider">Get the App</p>
-            <p className="text-sm font-bold">Install LithoLens</p>
+            <p className="text-sm font-bold">Install Prospector's Pal</p>
         </div>
       </button>
       <button 

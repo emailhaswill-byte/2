@@ -1,14 +1,14 @@
 {
-  "short_name": "LithoLens",
-  "name": "LithoLens Rock Identifier",
+  "short_name": "Prospector",
+  "name": "Prospector's Pal",
   "icons": [
     {
-      "src": "https://cdn-icons-png.flaticon.com/512/7238/7238686.png",
+      "src": "https://cdn-icons-png.flaticon.com/512/5775/5775439.png",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "https://cdn-icons-png.flaticon.com/512/7238/7238686.png",
+      "src": "https://cdn-icons-png.flaticon.com/512/5775/5775439.png",
       "type": "image/png",
       "sizes": "512x512"
     }

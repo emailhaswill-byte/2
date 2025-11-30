@@ -1,6 +1,6 @@
 {
-  "name": "LithoLens",
-  "description": "AI-powered rock and mineral identifier. Upload a photo to instantly identify rocks, crystals, and minerals.",
+  "name": "Prospector's Pal",
+  "description": "AI-powered geology companion. Identify rocks, estimate value, and find precious metals like a pro.",
   "requestFramePermissions": [
     "camera",
     "geolocation"

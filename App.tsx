@@ -5,7 +5,11 @@ import { ImageUploader } from './components/ImageUploader';
 import { AnalysisResult } from './components/AnalysisResult';
 import { Achievements } from './components/Achievements';
 import { InstallPWA } from './components/InstallPWA';
-import { Loader2, Pickaxe, BookOpen, ArrowLeft, Trash2, Lightbulb, Filter, Sun, Aperture, Maximize, MapPin } from 'lucide-react';
+import { Loader2, Pickaxe, BookOpen, ArrowLeft, Trash2, Lightbulb, Filter, Sun, Aperture, Maximize, MapPin, Coffee, Heart } from 'lucide-react';
+
+// REPLACE THIS LINK WITH YOUR OWN PAYPAL DONATION LINK
+// Go to paypal.com/buttons -> Donate -> Get Shareable Link
+const DONATION_LINK = "https://www.paypal.com/donate/?hosted_button_id=2SGXL79EX995Q";
 
 const ROCK_FACTS = [
   "Hematite is the primary ore of iron and often appears metallic gray or rusty red.",
@@ -42,7 +46,8 @@ const App: React.FC = () => {
 
   // Load library from local storage on mount
   useEffect(() => {
-    const saved = localStorage.getItem('lithoLens_library');
+    // Migrating to new key, but checking old key to preserve user data if possible
+    const saved = localStorage.getItem('prospectors_pal_library') || localStorage.getItem('lithoLens_library');
     if (saved) {
       try {
         setLibrary(JSON.parse(saved));
@@ -69,7 +74,7 @@ const App: React.FC = () => {
     
     // Save to local storage (try/catch for quota limits)
     try {
-      localStorage.setItem('lithoLens_library', JSON.stringify(updatedLibrary));
+      localStorage.setItem('prospectors_pal_library', JSON.stringify(updatedLibrary));
     } catch (e) {
       alert("Storage full! Could not save to library. Try deleting old items.");
     }
@@ -79,7 +84,7 @@ const App: React.FC = () => {
     e.stopPropagation();
     const updated = library.filter(item => item.id !== id);
     setLibrary(updated);
-    localStorage.setItem('lithoLens_library', JSON.stringify(updated));
+    localStorage.setItem('prospectors_pal_library', JSON.stringify(updated));
   };
 
   const viewLibraryItem = (item: SavedRock) => {
@@ -158,10 +163,10 @@ const App: React.FC = () => {
       <header className="w-full bg-stone-900 text-stone-50 py-4 px-6 shadow-md z-10 sticky top-0">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3 cursor-pointer" onClick={() => setView('scan')}>
-            <div className="p-2 bg-stone-800 rounded-lg">
-              <Pickaxe size={24} className="text-emerald-400" />
+            <div className="p-2 bg-stone-800 rounded-lg border border-stone-700">
+              <Pickaxe size={24} className="text-amber-400" />
             </div>
-            <h1 className="text-xl font-bold tracking-tight">LithoLens</h1>
+            <h1 className="text-xl font-bold tracking-tight">Prospector's Pal</h1>
           </div>
           
           <nav className="flex items-center gap-2">
@@ -292,11 +297,11 @@ const App: React.FC = () => {
               <div className="flex flex-col items-center w-full animate-fade-in-up">
                 <div className="text-center max-w-2xl mb-12">
                   <h2 className="text-4xl md:text-5xl font-extrabold text-stone-800 mb-6 leading-tight">
-                    Discover the <br/>
-                    <span className="text-emerald-600">Hidden Geology</span>
+                    Your Personal <br/>
+                    <span className="text-amber-500">AI Prospector</span>
                   </h2>
                   <p className="text-lg md:text-xl text-stone-600 leading-relaxed">
-                    Found an interesting stone? Upload a photo and our AI geologist will instantly identify it, explain its origins, and detail its properties.
+                    Found an interesting stone? Upload a photo and let Prospector's Pal identify it, estimate its value, and check for precious metals.
                   </p>
                 </div>
                 
@@ -332,18 +337,19 @@ const App: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-4xl opacity-75">
-                  {[
-                    { title: 'Instant ID', desc: 'Identify minerals in seconds', icon: '⚡' },
-                    { title: 'Valuation', desc: 'Get market value estimates', icon: '💰' },
-                    { title: 'Collection', desc: 'Build your digital rock library', icon: '📚' }
-                  ].map((item, i) => (
-                    <div key={i} className="bg-white p-6 rounded-xl border border-stone-200 shadow-sm text-center hover:border-emerald-300 transition-colors">
-                      <div className="text-3xl mb-3">{item.icon}</div>
-                      <h3 className="font-bold text-stone-800 mb-1">{item.title}</h3>
-                      <p className="text-sm text-stone-500">{item.desc}</p>
-                    </div>
-                  ))}
+                {/* Donation / Support Section */}
+                <div className="mt-12 mb-8 flex flex-col items-center">
+                   <h3 className="text-stone-500 text-sm font-medium mb-4 uppercase tracking-wider">Support Development</h3>
+                   <a 
+                    href={DONATION_LINK} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="group relative flex items-center gap-3 bg-[#FFC439] hover:bg-[#ffcf5c] text-stone-900 px-8 py-3 rounded-full font-bold shadow-lg shadow-amber-200/50 hover:shadow-amber-200/80 hover:-translate-y-1 transition-all duration-300"
+                   >
+                      <Coffee className="text-stone-800" size={20} />
+                      <span>Buy me a coffee</span>
+                      <Heart size={16} className="text-red-500 animate-pulse hidden group-hover:block absolute -top-1 -right-1" />
+                   </a>
                 </div>
               </div>
             )}
@@ -402,7 +408,7 @@ const App: React.FC = () => {
       </main>
 
       <footer className="w-full py-6 text-center text-stone-400 text-sm">
-        <p>© {new Date().getFullYear()} LithoLens. Powered by Google Gemini.</p>
+        <p>© {new Date().getFullYear()} Prospector's Pal. Powered by Google Gemini.</p>
       </footer>
     </div>
   );
