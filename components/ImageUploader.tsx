@@ -18,62 +18,74 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({ onImageSelect, dis
   /**
    * Compresses and resizes an image file to ensure it is under 3MB
    * and optimized for API usage.
+   * Uses URL.createObjectURL to avoid loading the full file into memory strings.
    */
   const compressImage = (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = (event) => {
-        const img = new Image();
-        img.src = event.target?.result as string;
-        img.onload = () => {
-          const canvas = document.createElement('canvas');
-          let width = img.width;
-          let height = img.height;
-          
-          // Resize if dimension is too large (max 1500px is sufficient for AI)
-          const MAX_DIMENSION = 1500;
-          if (width > MAX_DIMENSION || height > MAX_DIMENSION) {
-            if (width > height) {
-              height *= MAX_DIMENSION / width;
-              width = MAX_DIMENSION;
-            } else {
-              width *= MAX_DIMENSION / height;
-              height = MAX_DIMENSION;
+      // Create a blob URL to avoid reading the entire file into memory as a string
+      const objectUrl = URL.createObjectURL(file);
+      const img = new Image();
+      img.src = objectUrl;
+
+      img.onload = () => {
+        // Release memory associated with the object URL immediately
+        URL.revokeObjectURL(objectUrl);
+
+        const canvas = document.createElement('canvas');
+        let width = img.width;
+        let height = img.height;
+        
+        // Resize if dimension is too large. 
+        // Reduced to 1280px which is safer for low-memory mobile browsers
+        // and still provides excellent detail for Gemini.
+        const MAX_DIMENSION = 1280;
+        if (width > MAX_DIMENSION || height > MAX_DIMENSION) {
+          if (width > height) {
+            height *= MAX_DIMENSION / width;
+            width = MAX_DIMENSION;
+          } else {
+            width *= MAX_DIMENSION / height;
+            height = MAX_DIMENSION;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) {
+          reject(new Error("Could not get canvas context"));
+          return;
+        }
+        
+        // Draw image on white background (handle transparent PNGs)
+        ctx.fillStyle = "#FFFFFF";
+        ctx.fillRect(0, 0, width, height);
+        ctx.drawImage(img, 0, 0, width, height);
+
+        try {
+            // Initial compression
+            let quality = 0.8;
+            let dataUrl = canvas.toDataURL('image/jpeg', quality);
+            
+            // Loop to ensure size is under 3MB
+            // 3MB = 3 * 1024 * 1024 bytes approx 3,145,728
+            const MAX_BYTES = 3 * 1024 * 1024;
+            
+            while (dataUrl.length > MAX_BYTES && quality > 0.2) {
+              quality -= 0.1;
+              dataUrl = canvas.toDataURL('image/jpeg', quality);
             }
-          }
-
-          canvas.width = width;
-          canvas.height = height;
-          const ctx = canvas.getContext('2d');
-          if (!ctx) {
-            reject(new Error("Could not get canvas context"));
-            return;
-          }
-          
-          // Draw image on white background (handle transparent PNGs)
-          ctx.fillStyle = "#FFFFFF";
-          ctx.fillRect(0, 0, width, height);
-          ctx.drawImage(img, 0, 0, width, height);
-
-          // Initial compression
-          let quality = 0.85;
-          let dataUrl = canvas.toDataURL('image/jpeg', quality);
-          
-          // Loop to ensure size is under 3MB
-          // 3MB = 3 * 1024 * 1024 bytes approx 3,145,728
-          const MAX_BYTES = 3 * 1024 * 1024;
-          
-          while (dataUrl.length > MAX_BYTES && quality > 0.2) {
-            quality -= 0.1;
-            dataUrl = canvas.toDataURL('image/jpeg', quality);
-          }
-          
-          resolve(dataUrl);
-        };
-        img.onerror = (err) => reject(err);
+            
+            resolve(dataUrl);
+        } catch (e) {
+            reject(e);
+        }
       };
-      reader.onerror = (err) => reject(err);
+
+      img.onerror = (err) => {
+        URL.revokeObjectURL(objectUrl);
+        reject(err);
+      };
     });
   };
 
@@ -91,7 +103,7 @@ export const ImageUploader: React.FC<ImageUploaderProps> = ({ onImageSelect, dis
       onImageSelect(compressedBase64);
     } catch (error) {
       console.error("Image processing failed:", error);
-      alert("Failed to process image. Please try another file.");
+      alert("Failed to process image. It might be too large or corrupted. Please try again.");
     } finally {
       setIsCompressing(false);
     }
