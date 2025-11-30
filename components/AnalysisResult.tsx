@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { RockAnalysis } from '../types';
-import { Leaf, Info, Diamond, Layers, Search, AlertTriangle, ExternalLink, DollarSign, Bookmark, Check, Pickaxe, HelpCircle, Image as ImageIcon, FlaskConical, Globe, Hammer, Coins, Activity, MoveHorizontal, MapPin, Loader2 } from 'lucide-react';
+import { Leaf, Info, Diamond, Layers, Search, AlertTriangle, ExternalLink, DollarSign, Bookmark, Check, Pickaxe, HelpCircle, Image as ImageIcon, FlaskConical, Globe, Hammer, Coins, Activity, MoveHorizontal } from 'lucide-react';
 
 interface AnalysisResultProps {
   data: RockAnalysis;
@@ -191,35 +191,10 @@ const RockComparison: React.FC<{ userImage: string; rockName: string }> = ({ use
 
 export const AnalysisResult: React.FC<AnalysisResultProps> = ({ data, imagePreview, onReset, onSave, isSaved }) => {
   const [hasSaved, setHasSaved] = useState(isSaved || false);
-  const [currentLocation, setCurrentLocation] = useState<string | undefined>(data.locationFound);
-  const [isLocating, setIsLocating] = useState(false);
-
-  const handleGetLocation = () => {
-    if (!navigator.geolocation) {
-      alert("Geolocation is not supported by your browser.");
-      return;
-    }
-
-    setIsLocating(true);
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const { latitude, longitude } = position.coords;
-        const locString = `Lat: ${latitude.toFixed(4)}, Long: ${longitude.toFixed(4)}`;
-        setCurrentLocation(locString);
-        setIsLocating(false);
-      },
-      (error) => {
-        console.error(error);
-        alert("Unable to retrieve location. Please check your permissions.");
-        setIsLocating(false);
-      }
-    );
-  };
 
   const handleSave = () => {
     if (onSave && !hasSaved) {
-      // Pass the current location (if any) to the save handler
-      onSave({ ...data, locationFound: currentLocation });
+      onSave(data);
       setHasSaved(true);
     }
   };
@@ -267,22 +242,6 @@ export const AnalysisResult: React.FC<AnalysisResultProps> = ({ data, imagePrevi
               <span className="inline-block px-3 py-1 bg-stone-700 text-stone-100 text-xs font-bold tracking-wider uppercase rounded-full">
                 {data.category}
               </span>
-              
-              {/* Dynamic Location Button/Badge */}
-              {currentLocation ? (
-                <span className="inline-flex items-center gap-1 px-3 py-1 bg-emerald-900/50 text-emerald-100 text-xs font-bold tracking-wider uppercase rounded-full border border-emerald-700/50">
-                  <MapPin size={12} /> {currentLocation}
-                </span>
-              ) : (
-                <button
-                  onClick={handleGetLocation}
-                  disabled={isLocating}
-                  className="inline-flex items-center gap-1 px-3 py-1 bg-stone-700/50 hover:bg-stone-700 text-stone-300 hover:text-white text-xs font-bold tracking-wider uppercase rounded-full transition-colors border border-stone-600 border-dashed"
-                >
-                  {isLocating ? <Loader2 size={12} className="animate-spin" /> : <MapPin size={12} />}
-                  {isLocating ? 'Locating...' : 'Add Location'}
-                </button>
-              )}
             </div>
             
             <h1 className="text-3xl md:text-5xl font-bold mb-2 tracking-tight">{data.name}</h1>

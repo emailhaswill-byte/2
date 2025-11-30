@@ -31,7 +31,6 @@ export interface RockAnalysis {
   estimatedValue: string; // Market value
   valuableElements: string[]; // Potential valuable elements (Au, Ag, Cu, etc.)
   alternatives: AlternativeRock[]; // Suggested alternatives if ID is wrong
-  locationFound?: string; // Geographic context provided by user
 }
 
 export interface SavedRock extends RockAnalysis {

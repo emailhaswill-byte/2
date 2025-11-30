@@ -8,11 +8,8 @@ export default defineConfig(({ mode }) => {
 
   return {
     plugins: [react()],
-    define: {
-      // Safely replace process.env.API_KEY with the string value
-      // If env.API_KEY is undefined, it replaces with "undefined" (string) or undefined value, preventing crash
-      'process.env.API_KEY': JSON.stringify(env.API_KEY || '') 
-    },
+    // We explicitly do NOT define process.env.API_KEY here.
+    // This prevents the secret key from being bundled into the client-side code.
     build: {
       outDir: 'dist',
       assetsDir: 'assets',

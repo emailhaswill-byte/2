@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { AnalysisState, SavedRock, RockAnalysis } from './types';
 import { identifyRock } from './services/geminiService';
@@ -5,7 +6,7 @@ import { ImageUploader } from './components/ImageUploader';
 import { AnalysisResult } from './components/AnalysisResult';
 import { Achievements } from './components/Achievements';
 import { InstallPWA } from './components/InstallPWA';
-import { Loader2, Pickaxe, BookOpen, ArrowLeft, Trash2, Lightbulb, Filter, Sun, Aperture, Maximize, MapPin, Coffee, Heart } from 'lucide-react';
+import { Loader2, Pickaxe, BookOpen, ArrowLeft, Trash2, Lightbulb, Filter, Sun, Aperture, Maximize, Coffee, Heart } from 'lucide-react';
 
 // REPLACE THIS LINK WITH YOUR OWN PAYPAL DONATION LINK
 // Go to paypal.com/buttons -> Donate -> Get Shareable Link
@@ -273,7 +274,6 @@ const App: React.FC = () => {
                         <div className="p-4 flex-1 flex flex-col">
                           <div className="mb-2 flex items-center justify-between">
                             <span className="text-xs font-bold text-emerald-600 uppercase tracking-wider">{rock.category}</span>
-                            {rock.locationFound && <span className="text-[10px] text-stone-400 flex items-center gap-1"><MapPin size={10} /> {rock.locationFound.slice(0, 15)}{rock.locationFound.length > 15 ? '...' : ''}</span>}
                           </div>
                           <h3 className="font-bold text-xl text-stone-800 mb-1">{rock.name}</h3>
                           <p className="text-stone-500 text-sm line-clamp-2 flex-1">{rock.description}</p>
